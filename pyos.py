@@ -50,6 +50,8 @@ class os_t:
 	def read_cmd(self, console_str):
 		if console_str == "quit": # Se o comando digitado for "quit"
 			self.quit()	# Chama a funcao quit
+		if console_str.startswith("run"):
+			self.run(console_str)
 
 	def handle_interrupt(self, interrupt):
 		if interrupt == pycfg.INTERRUPT_KEYBOARD:
@@ -60,3 +62,11 @@ class os_t:
 	def syscall(self):
 		#self.terminal.app_print(msg)
 		return
+
+	def run(self, console_str):
+		console_array = console_str.split()
+		
+		if console_array.length != 0:
+			printk("teste")
+
+		
