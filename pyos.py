@@ -39,34 +39,47 @@ class os_t:
 			self.terminal.console_print("\r" + self.console_str) # Printa a console_str atualizada no console;
 			return
 		elif (key == curses.KEY_ENTER) or (key == ord('\n')):
-			self.read_cmd(self.console_str) # Chama a funcao read_cmd que le o comando digitado;
+			self.read_cmd() # Chama a funcao read_cmd que le o comando digitado;
 			self.terminal.console_print("\n") # Vai para proxima linha;
 			self.console_str = "" # Apaga o console_str
 			return
 
 	def interrupt_timer(self):
-		self.syscall()
+		self.printk("Timer interruption - not implemented!")
 
-	def read_cmd(self, console_str):
-		if console_str == "quit": # Se o comando digitado for "quit"
+	def interrupt_memory_protection_fault(self):
+		self.printk("Memory protection fault interruption - not implemented!")
+
+	def read_cmd(self):
+		if self.console_str == "quit": # Se o comando digitado for "quit"
 			self.quit()	# Chama a funcao quit
-		if console_str.startswith("run"):
-			self.run(console_str)
+		elif self.console_str.startswith("run"):
+			self.run()
+		else:
+			self.command_not_found()
 
 	def handle_interrupt(self, interrupt):
 		if interrupt == pycfg.INTERRUPT_KEYBOARD:
 			self.interrupt_keyboard()
-		elif interrupt == pycfg.INTERRUPT_TIMER:
+		if interrupt == pycfg.INTERRUPT_TIMER:
 			self.interrupt_timer()
+		if interrupt == pycfg.INTERRUPT_MEMORY_PROTECTION_FAULT:
+			self.interrupt_memory_protection_fault()
 
 	def syscall(self):
 		#self.terminal.app_print(msg)
 		return
 
-	def run(self, console_str):
-		console_array = console_str.split()
+	def run(self):
+		run_command = self.console_str[len("run") + 1:]
+		self.console_str = '' # Limpa console
 		
-		if console_array.length != 0:
-			printk("teste")
+		if run_command != "" :
+			self.terminal.console_print('\n' + "Now running " + run_command + "! \n")	
+		else:
+			self.terminal.console_print('\n run command cannot receive empty parameters! \n')
 
 		
+	def command_not_found(self):
+		self.terminal.console_print('\n' '"' + self.console_str + '"' + " command not found \n")		
+		self.console_str = '' # Limpa console
